@@ -5,10 +5,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import twitter4j.FilterQuery;
+import twitter4j.IDs;
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -19,6 +21,8 @@ public class Bot {
 	TwitterFactory factory;
 	TwitterStream twitterStream;
 	Twitter twitter;
+	IDs friends;
+	
 	
 	public static void main(String args[]) throws Exception{
 	    // The factory instance is re-useable and thread safe.
@@ -30,17 +34,37 @@ public class Bot {
 	    //System.out.println("Successfully updated the status to [" + status.getText() + "].");
 	}
 	
-	public Bot(TwitterFactory factory){
+	public Bot(TwitterFactory factory) throws TwitterException{
 		this.factory = factory;
 		this.twitter = factory.getInstance();
 		this.twitterStream = new TwitterStreamFactory().getInstance();
+		this.friends = twitter.getFriendsIDs(-1);
 	}
 
+	public boolean isFriend(long idUser){
+		long[] amics = friends.getIDs();
+		for (int i = 0; i < amics.length; i++){
+			if (idUser == amics[i]){
+				return true;
+			}
+		}
+		return false;
+		
+	}
+	
 	public Status sendTweet(String tweet) throws TwitterException {
 		Status status = twitter.updateStatus(tweet);
 		System.out.println("Successfully updated the status to [" + status.getText() + "].");
 		return status;
 	}
+	
+	public void reply(Status inReplyTo, String text) throws TwitterException{
+		System.out.println("in reply to " + inReplyTo.getText());
+		StatusUpdate stat= new StatusUpdate("@" + inReplyTo.getUser().getScreenName() + text);
+	    stat.setInReplyToStatusId(inReplyTo.getId());
+	    twitter.updateStatus(stat);
+	    System.out.println("done");
+	 }
 
 	public void deleteTweet(Status tweet) {
 		try {
@@ -63,29 +87,7 @@ public class Bot {
 
 	public void respondTweet(String string, String string2) throws TwitterException {
 		System.out.println("Starting stream listener....");
-		StatusListener listener = new StatusListener() {
-			Pattern p = Pattern.compile("ado ");
-			public void onStatus(Status status) {
-				String text = status.getText();
-				Matcher m = p.matcher(text);
-				if (m.matches()){
-					System.out.println(status.getUser().getName() + " : " + status.getText());
-				}
-				try {
-					Thread.currentThread().sleep(9000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-			public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {}
-			public void onTrackLimitationNotice(int numberOfLimitedStatuses) {}
-			public void onException(Exception ex) {ex.printStackTrace();}
-			public void onScrubGeo(long userId, long upToStatusId) {}
-			public void onStallWarning(StallWarning warning) {}
-		};
-		twitterStream.addListener(listener);
+		twitterStream.addListener(new TextListener(this));
 		twitterStream.filter(tweetFilterCreator());
 		//twitterStream.sample();
 	}
@@ -101,5 +103,9 @@ public class Bot {
 		//Note that not all tweets have location metadata set.
 		tweetFilterQuery.language(new String[]{"en"}); // Note that language does not work properly on Norwegian tweets */
 		return tweetFilterQuery;
+	}
+
+	public long userID() throws IllegalStateException, TwitterException {
+		return twitter.getId();
 	}
 }
