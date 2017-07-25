@@ -27,11 +27,7 @@ public class Bot {
 	public static void main(String args[]) throws Exception{
 	    // The factory instance is re-useable and thread safe.
 	    Bot bot = new Bot(new TwitterFactory());
-	    bot.respondTweet("uno", "dos");
-	    while(true);
-	    //Twitter twitter = factory.getInstance();
-	    //Status status = twitter.updateStatus("@aVorcan marandina!!!! lingotero!!!! unchara!!!!");
-	    //System.out.println("Successfully updated the status to [" + status.getText() + "].");
+	    bot.startService();
 	}
 	
 	public Bot(TwitterFactory factory) throws TwitterException{
@@ -60,10 +56,9 @@ public class Bot {
 	
 	public void reply(Status inReplyTo, String text) throws TwitterException{
 		System.out.println("in reply to " + inReplyTo.getText());
-		StatusUpdate stat= new StatusUpdate("@" + inReplyTo.getUser().getScreenName() + text);
+		StatusUpdate stat= new StatusUpdate("@" + inReplyTo.getUser().getScreenName() + " " + text);
 	    stat.setInReplyToStatusId(inReplyTo.getId());
 	    twitter.updateStatus(stat);
-	    System.out.println("done");
 	 }
 
 	public void deleteTweet(Status tweet) {
@@ -85,11 +80,16 @@ public class Bot {
 		return statuses;
 	}
 
-	public void respondTweet(String string, String string2) throws TwitterException {
+	public void startService() throws TwitterException {
 		System.out.println("Starting stream listener....");
-		twitterStream.addListener(new TextListener(this));
+		twitterStream.addListener(new TextListener(this, "ado", "Pues para %s el que tengo aqui colgado"));
+		twitterStream.addListener(new TextListener(this, "ada", "Pues para %s la que tengo aqui colgada"));
+		twitterStream.addListener(new TextListener(this, "ente", "Sabes, para %s mi polla en tu frente..."));
+		twitterStream.addListener(new TextListener(this, "al", "Para %s mi polla en tu ojal..."));
+		twitterStream.addListener(new TextListener(this, "ar", "Para %s mi polla en tu paladar..."));
+		twitterStream.addListener(new TextListener(this, "enta", "%s?? pues come de aqui que alimenta!!!!"));
 		twitterStream.filter(tweetFilterCreator());
-		//twitterStream.sample();
+		while(true);
 	}
 	
 	private FilterQuery tweetFilterCreator() throws TwitterException{
@@ -97,11 +97,6 @@ public class Bot {
 		System.out.println("amics! " + friendsIDs.length);
 		FilterQuery tweetFilterQuery = new FilterQuery(friendsIDs); // See 
 		//tweetFilterQuery.track(new String[]{"*ado"}); // OR on keywords
-		/*tweetFilterQuery.locations(new double[][]{new double[]{-126.562500,30.448674},
-		                new double[]{-61.171875,44.087585
-		                }}); // See https://dev.twitter.com/docs/streaming-apis/parameters#locations for proper location doc. 
-		//Note that not all tweets have location metadata set.
-		tweetFilterQuery.language(new String[]{"en"}); // Note that language does not work properly on Norwegian tweets */
 		return tweetFilterQuery;
 	}
 
