@@ -9,16 +9,14 @@ import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 
 public class TextListener implements StatusListener{
-	Pattern p;// = Pattern.compile("(^|[\\w\\W]*[\\s]{1})([a-z]*ado)[^\\n]*");
+	Pattern p;
 	Bot bot;
-	private String regex;
 	private String text;
 	
 	public TextListener(Bot bot, String regex, String text) {
 		this.bot = bot;
-		this.regex = "(^|[\\w\\W]*[\\s]{1})([a-z]*" + regex + ")[^\\n]*";
 		this.text = text;
-		this.p = Pattern.compile(regex);
+		this.p = Pattern.compile("(^|[\\w\\W]*[\\s]{1})([a-z]*" + regex + ")[^\\n]*");
 	}
 
 	public void onStatus(Status status) {
@@ -31,7 +29,7 @@ public class TextListener implements StatusListener{
 			Matcher m = p.matcher(tweet);
 			if (m.matches()){
 				System.out.println(m.group(2));
-				bot.reply(status, String.format(text, m.group(2)));//" Pues para "+ m.group(2) + " el que tengo aquí colgado");
+				bot.reply(status, String.format(text, m.group(2)));
 			}else{
 				System.out.println("No match");
 			}

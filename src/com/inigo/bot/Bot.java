@@ -50,15 +50,16 @@ public class Bot {
 	
 	public Status sendTweet(String tweet) throws TwitterException {
 		Status status = twitter.updateStatus(tweet);
-		System.out.println("Successfully updated the status to [" + status.getText() + "].");
+		//System.out.println("Successfully updated the status to [" + status.getText() + "].");
 		return status;
 	}
 	
-	public void reply(Status inReplyTo, String text) throws TwitterException{
+	public String reply(Status inReplyTo, String text) throws TwitterException{
 		System.out.println("in reply to " + inReplyTo.getText());
 		StatusUpdate stat= new StatusUpdate("@" + inReplyTo.getUser().getScreenName() + " " + text);
 	    stat.setInReplyToStatusId(inReplyTo.getId());
 	    twitter.updateStatus(stat);
+	    return stat.getStatus();
 	 }
 
 	public void deleteTweet(Status tweet) {
