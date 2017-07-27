@@ -17,7 +17,7 @@ public class TextListener implements StatusListener{
 	public TextListener(Bot bot, String regex, String text) {
 		this.bot = bot;
 		this.text = text;
-		this.p = Pattern.compile("(^|[\\w\\W]*[\\s]{1})([a-z]*" + regex + "[^\\n]*");
+		this.p = Pattern.compile("(^|[\\w\\W]*[\\s]{1})([a-z]+" + regex + "[^\\n]*");
 	}
 
 	public void onStatus(Status status) {
@@ -32,9 +32,6 @@ public class TextListener implements StatusListener{
 			if (m.matches()){
 				bot.reply(status, String.format(text, m.group(2)));
 				System.out.println(String.format(text, m.group(2)));
-			}else{
-				System.out.println(tweet + " No match");
-				
 			}
 		} catch (IllegalStateException | TwitterException e1) {
 			e1.printStackTrace();
