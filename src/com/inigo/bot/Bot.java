@@ -50,7 +50,6 @@ public class Bot {
 	
 	public Status sendTweet(String tweet) throws TwitterException {
 		Status status = twitter.updateStatus(tweet);
-		//System.out.println("Successfully updated the status to [" + status.getText() + "].");
 		return status;
 	}
 	
@@ -83,19 +82,20 @@ public class Bot {
 
 	public void startService() throws TwitterException {
 		System.out.println("Starting stream listener....");
-		twitterStream.addListener(new TextListener(this, "ado", "Pues para %s el que tengo aqui colgado"));
-		twitterStream.addListener(new TextListener(this, "ada", "Pues para %s la que tengo aqui colgada"));
-		twitterStream.addListener(new TextListener(this, "ente", "Sabes, para %s mi polla en tu frente..."));
-		twitterStream.addListener(new TextListener(this, "al", "Para %s mi polla en tu ojal..."));
-		twitterStream.addListener(new TextListener(this, "ar", "Para %s mi polla en tu paladar..."));
-		twitterStream.addListener(new TextListener(this, "enta", "%s?? pues come de aqui que alimenta!!!!"));
+		twitterStream.addListener(new TextListener(this, "ado)[s]?", "Pues para %s el que tengo aqui colgado"));
+		twitterStream.addListener(new TextListener(this, "ada)[s]?", "Pues para %s la que tengo aqui colgada"));
+		twitterStream.addListener(new TextListener(this, "ente)[s]?", "Sabes?, para %s mi polla en tu frente..."));
+		twitterStream.addListener(new TextListener(this, "al)", "Para %s mi polla en tu ojal..."));
+		twitterStream.addListener(new TextListener(this, "ar)", "Sabes quien va a %s? mi polla en tu paladar..."));
+		twitterStream.addListener(new TextListener(this, "enta)[s]?", "%s?? pues come de aqui que alimenta!!!!"));
 		twitterStream.filter(tweetFilterCreator());
+		System.out.println("Started.");
 		while(true);
 	}
 	
 	private FilterQuery tweetFilterCreator() throws TwitterException{
 		long[] friendsIDs = twitter.getFriendsIDs(-1).getIDs();
-		System.out.println("amics! " + friendsIDs.length);
+		System.out.println("Following: " + friendsIDs.length);
 		FilterQuery tweetFilterQuery = new FilterQuery(friendsIDs); // See 
 		//tweetFilterQuery.track(new String[]{"*ado"}); // OR on keywords
 		return tweetFilterQuery;

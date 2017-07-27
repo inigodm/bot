@@ -2,11 +2,12 @@ package com.inigo.bot;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import twitter4j.StatusListener;
-import twitter4j.TwitterException;
+
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
+import twitter4j.StatusListener;
+import twitter4j.TwitterException;
 
 public class TextListener implements StatusListener{
 	Pattern p;
@@ -16,22 +17,24 @@ public class TextListener implements StatusListener{
 	public TextListener(Bot bot, String regex, String text) {
 		this.bot = bot;
 		this.text = text;
-		this.p = Pattern.compile("(^|[\\w\\W]*[\\s]{1})([a-z]*" + regex + ")[^\\n]*");
+		this.p = Pattern.compile("(^|[\\w\\W]*[\\s]{1})([a-z]*" + regex + "[^\\n]*");
 	}
 
 	public void onStatus(Status status) {
 		try {
 			// if is not friend of mine or if is mine, don't do nothing
 			if (!bot.isFriend(status.getUser().getId()) || status.getUser().getId() == bot.userID()){
+				System.out.println(status.getUser().getId() + "No amigo ");
 				return;
 			}
-			String tweet = status.getText();
+			String tweet = status.getText().toLowerCase();
 			Matcher m = p.matcher(tweet);
 			if (m.matches()){
-				System.out.println(m.group(2));
 				bot.reply(status, String.format(text, m.group(2)));
+				System.out.println(String.format(text, m.group(2)));
 			}else{
-				System.out.println("No match");
+				System.out.println(tweet + " No match");
+				
 			}
 		} catch (IllegalStateException | TwitterException e1) {
 			e1.printStackTrace();
@@ -40,7 +43,6 @@ public class TextListener implements StatusListener{
 	}
 
 	public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-		System.out.println("deletion notice");
 	}
 
 	public void onTrackLimitationNotice(int numberOfLimitedStatuses) {

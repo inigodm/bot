@@ -57,7 +57,7 @@ public class MainTest {
 	public void setup() throws IllegalStateException, TwitterException{
 		statuses = new AuxList();
 		statuses.add(tweet);
-		when(ids.getIDs()).thenReturn(new long[]{2222222});
+		when(ids.getIDs()).thenReturn(new long[]{444444});
 		when(tweet.getId()).thenReturn(new Long(333333));
 		when(tweet.getUser()).thenReturn(user);
 		when(tweet.getText()).thenReturn(tweetText);
@@ -107,10 +107,13 @@ public class MainTest {
 	@Test
 	public void testListener() throws TwitterException{
 		b = new Bot(tf);
-		TextListener tl = new TextListener(b, "ado", "Pues para %s el que tengo aqui colgado");
+		TextListener tl = new TextListener(b, "ado)[s]*", "Pues para %s el que tengo aqui colgado");
 		tl.onStatus(tweet);
 		System.out.println("No ha respondido nada");
-		when(tweet.getText()).thenReturn("ya he acabado tu");
+		when(tweet.getText()).thenReturn("ya he acabados tu");
+		tl.onStatus(tweet);
+		when(user.getId()).thenReturn(new Long(444444));
+		when(tweet.getText()).thenReturn("todos terminados");
 		tl.onStatus(tweet);
 	}
 }
