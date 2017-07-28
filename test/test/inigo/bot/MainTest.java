@@ -33,6 +33,7 @@ import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.conf.ConfigurationBuilder;
 import com.inigo.bot.Bot;
+import com.inigo.bot.MultiPatternListener;
 import com.inigo.bot.TextListener;
 
 public class MainTest {
@@ -57,7 +58,7 @@ public class MainTest {
 	public void setup() throws IllegalStateException, TwitterException{
 		statuses = new AuxList();
 		statuses.add(tweet);
-		when(ids.getIDs()).thenReturn(new long[]{444444});
+		when(ids.getIDs()).thenReturn(new long[]{444444, 222222});
 		when(tweet.getId()).thenReturn(new Long(333333));
 		when(tweet.getUser()).thenReturn(user);
 		when(tweet.getText()).thenReturn(tweetText);
@@ -77,7 +78,6 @@ public class MainTest {
 		b = new Bot(tf);
 		Status tweet = b.sendTweet(tweetText);
 		assertTrue(tweet.getId() == 333333);
-		Thread.currentThread().sleep(1000);
 		b.deleteTweet(tweet);
 	}
 	
@@ -105,24 +105,23 @@ public class MainTest {
 	}
 	
 	@Test
-	public void testListener() throws TwitterException{
+	public void testMultiPatternListener() throws TwitterException{
 		b = new Bot(tf);
-		TextListener tl = new TextListener(b, "ado)[s]*", "Pues para %s el que tengo aqui colgado");
-		tl.onStatus(tweet);
-		when(tweet.getText()).thenReturn("un abogado?");
-		tl.onStatus(tweet);
+		MultiPatternListener mpl = new MultiPatternListener(b);
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ente)[s]?(?:[^a-z]+|$)[^\\n]*", "Sabes?, para %s mi polla en tu frente...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ar)(?:[^a-z]+|$)[^\\n]*", "Sabes quien va a %s? mi polla en tu paladar...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ado)[s]?(?:[^a-z]+|$)[^\\n]*", "Para %s el que tengo aqui colgado");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ada)[s]?(?:[^a-z]+|$)[^\\n]*", "Para %s la que tengo aqui colgada");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+al)(?:[^a-z]+|$)[^\\n]*", "Para %s mi polla en tu ojal...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+enta)[s]?(?:[^a-z]+|$)[^\\n]*", "%s?? pues come de aqui que alimenta!!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ino)[s]?(?:[^a-z]+|$)[^\\n]*", "%s??? en tu culo mi pepino!!!");
 		when(tweet.getText()).thenReturn("Pos claro, es evidente");
-		System.out.println("*********************************");
-		tl = new TextListener(b, "ente)[s]?([^a-z]+|$)", "Sabes?, para %s mi polla en tu frente...");
-		tl.onStatus(tweet);
-		when(tweet.getText()).thenReturn("va a llegar");
-		System.out.println("*********************************");
-		tl = new TextListener(b, "ar)([^a-z]+|$)", "Sabes quien va a %s? mi polla en tu paladar...");
-		tl.onStatus(tweet);
-		System.out.println("*********************************");
-		when(user.getId()).thenReturn(new Long(444444));
-		when(tweet.getText()).thenReturn("todos terminados");
-		tl.onStatus(tweet);
+		mpl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("Sabes que soy abogado? pues tenlo en mente");
+		mpl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("Se van a pelear...");
+		mpl.onStatus(tweet);
+		
 	}
 }
 

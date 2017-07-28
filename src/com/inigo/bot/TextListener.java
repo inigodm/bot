@@ -17,7 +17,7 @@ public class TextListener implements StatusListener{
 	public TextListener(Bot bot, String regex, String text) {
 		this.bot = bot;
 		this.text = text;
-		this.p = Pattern.compile("(^|[\\w\\W]*[\\s]{1})([a-z]+" + regex + "[^\\n]*");
+		this.p = Pattern.compile("(^|[\\w\\W]*[\\s]{1})([a-z]+" + regex + "(?:[^a-z]+|$)[^\\n]*");
 	}
 
 	public void onStatus(Status status) {

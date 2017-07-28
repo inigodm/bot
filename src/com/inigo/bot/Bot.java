@@ -82,12 +82,15 @@ public class Bot {
 
 	public void startService() throws TwitterException {
 		System.out.println("Starting stream listener....");
-		twitterStream.addListener(new TextListener(this, "ado)[s]?(?:[^a-z]+|$)", "Pues para %s el que tengo aqui colgado"));
-		twitterStream.addListener(new TextListener(this, "ada)[s]?(?:[^a-z]+|$)", "Pues para %s la que tengo aqui colgada"));
-		twitterStream.addListener(new TextListener(this, "ente)[s]?(?:[^a-z]+|$)", "Sabes?, para %s mi polla en tu frente..."));
-		twitterStream.addListener(new TextListener(this, "al)(?:[^a-z]+|$)", "Para %s mi polla en tu ojal..."));
-		twitterStream.addListener(new TextListener(this, "ar)(?:[^a-z]+|$)", "Sabes quien va a %s? mi polla en tu paladar..."));
-		twitterStream.addListener(new TextListener(this, "enta)[s]?(?:[^a-z]+|$)", "%s?? pues come de aqui que alimenta!!!!"));
+		MultiPatternListener mpl = new MultiPatternListener(this);
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ente)[s]?(?:[^a-z]+|$)[^\\n]*", "Sabes?, para %s mi polla en tu frente...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ar)(?:[^a-z]+|$)[^\\n]*", "Sabes quien va a %s? mi polla en tu paladar...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ado)[s]?(?:[^a-z]+|$)[^\\n]*", "Para %s el que tengo aqui colgado");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ada)[s]?(?:[^a-z]+|$)[^\\n]*", "Para %s la que tengo aqui colgada");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+al)(?:[^a-z]+|$)[^\\n]*", "Para %s mi polla en tu ojal...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+enta)[s]?(?:[^a-z]+|$)[^\\n]*", "%s?? pues come de aqui que alimenta!!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ino)[s]?(?:[^a-z]+|$)[^\\n]*", "%s??? en tu culo mi pepino!!!");
+		twitterStream.addListener(mpl);
 		twitterStream.filter(tweetFilterCreator());
 		System.out.println("Started.");
 		while(true);
