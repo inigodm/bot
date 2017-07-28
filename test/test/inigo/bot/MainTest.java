@@ -33,6 +33,7 @@ import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.conf.ConfigurationBuilder;
 import com.inigo.bot.Bot;
+import com.inigo.bot.GIFFinderListener;
 import com.inigo.bot.MultiPatternListener;
 import com.inigo.bot.TextListener;
 
@@ -121,7 +122,46 @@ public class MainTest {
 		mpl.onStatus(tweet);
 		when(tweet.getText()).thenReturn("Se van a pelear...");
 		mpl.onStatus(tweet);
-		
+	}
+	
+	@Test
+	public void testListener() throws TwitterException{
+		b = new Bot(tf);
+		TextListener tl = new TextListener(b, "ado)[s]*", "Pues para %s el que tengo aqui colgado");
+		tl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("un abogado?");
+		tl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("Pos claro, es evidente");
+		System.out.println("*********************************");
+		tl = new TextListener(b, "ente)[s]?([^a-z]+|$)", "Sabes?, para %s mi polla en tu frente...");
+		tl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("va a llegar");
+		System.out.println("*********************************");
+		tl = new TextListener(b, "ar)([^a-z]+|$)", "Sabes quien va a %s? mi polla en tu paladar...");
+		tl.onStatus(tweet);
+		System.out.println("*********************************");
+		when(user.getId()).thenReturn(new Long(444444));
+		when(tweet.getText()).thenReturn("todos terminados");
+		tl.onStatus(tweet);
+	}
+	
+	@Test
+	public void testGIFListener() throws Exception{
+		b = new Bot(tf);
+		GIFFinderListener gifl = new GIFFinderListener(b);
+		gifl.add("fail");
+		gifl.add("wtf");
+		gifl.add("l[o]+l");
+		gifl.add("bf4");
+		gifl.add("battlefield");
+		String html = gifl.tryGettingAImage("faifdsfdsfsdfsdfdsal", 0);
+		System.out.println("html: " +html);
+		html = gifl.tryGettingAImage("fail", 0);
+		assertTrue(html.length() > 0);
+		when(tweet.getText()).thenReturn("vaya pedazo de fail");
+		gifl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("wtf");
+		gifl.onStatus(tweet);
 	}
 }
 

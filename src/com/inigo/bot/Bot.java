@@ -1,5 +1,6 @@
 package com.inigo.bot;
 
+import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +55,7 @@ public class Bot {
 	}
 	
 	public String reply(Status inReplyTo, String text) throws TwitterException{
-		System.out.println("in reply to " + inReplyTo.getText());
+		System.out.println("in reply to " + inReplyTo.getText() + " " + text);
 		StatusUpdate stat= new StatusUpdate("@" + inReplyTo.getUser().getScreenName() + " " + text);
 	    stat.setInReplyToStatusId(inReplyTo.getId());
 	    twitter.updateStatus(stat);
@@ -90,21 +91,50 @@ public class Bot {
 		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+al)(?:[^a-z]+|$)[^\\n]*", "Para %s mi polla en tu ojal...");
 		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+enta)[s]?(?:[^a-z]+|$)[^\\n]*", "%s?? pues come de aqui que alimenta!!!!");
 		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ino)[s]?(?:[^a-z]+|$)[^\\n]*", "%s??? en tu culo mi pepino!!!");
+		GIFFinderListener gifl = new GIFFinderListener(this);
+		gifl.add("fail");
+		gifl.add("wtf");
+		gifl.add("l[o]+l");
+		gifl.add("bf4");
+		gifl.add("battlefield");
 		twitterStream.addListener(mpl);
+		twitterStream.addListener(gifl);
 		twitterStream.filter(tweetFilterCreator());
 		System.out.println("Started.");
-		while(true);
+		stopExecution();
+		
+	}
+	
+	private void stopExecution(){
+		while(true){
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private FilterQuery tweetFilterCreator() throws TwitterException{
 		long[] friendsIDs = twitter.getFriendsIDs(-1).getIDs();
 		System.out.println("Following: " + friendsIDs.length);
 		FilterQuery tweetFilterQuery = new FilterQuery(friendsIDs); // See 
-		//tweetFilterQuery.track(new String[]{"*ado"}); // OR on keywords
 		return tweetFilterQuery;
 	}
 
 	public long userID() throws IllegalStateException, TwitterException {
 		return twitter.getId();
+	}
+
+	public void replyWithMedia(Status inReplyTo, String path) throws TwitterException {
+		replyWithMedia(inReplyTo, path, "");
+	}
+	
+	public void replyWithMedia(Status inReplyTo, String path, String msg) throws TwitterException {
+		System.out.println("in reply to " + inReplyTo.getText());
+		StatusUpdate stat= new StatusUpdate("@" + inReplyTo.getUser().getScreenName() + " " + msg);
+	    stat.setInReplyToStatusId(inReplyTo.getId());
+	    stat.setMedia(new File(path));
+	    twitter.updateStatus(stat);
 	}
 }
