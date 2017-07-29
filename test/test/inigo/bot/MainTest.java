@@ -2,6 +2,7 @@ package test.inigo.bot;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.URLEntity;
+import twitter4j.UploadedMedia;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.conf.ConfigurationBuilder;
@@ -48,6 +50,8 @@ public class MainTest {
 	static Status tweet;
 	@Mock
 	static IDs ids;
+	@Mock
+	static UploadedMedia um;
 	AuxList statuses;
 	static String tweetText ="tweet text";
 	
@@ -69,6 +73,8 @@ public class MainTest {
 		when(twitter.getFriendsIDs(-1)).thenReturn(ids);
 		when(twitter.updateStatus(tweetText)).thenReturn(tweet);
 		when(twitter.getHomeTimeline()).thenReturn(statuses);
+		when(twitter.uploadMedia(any(File.class))).thenReturn(um);
+		when(um.getMediaId()).thenReturn(new Long(11111111));
 		//when(twitter.updateStatus(stsup)).thenReturn(sts);
 		twitter.destroyStatus(tweet.getId());
 		when(tf.getInstance()).thenReturn(twitter);
@@ -154,14 +160,23 @@ public class MainTest {
 		gifl.add("l[o]+l");
 		gifl.add("bf4");
 		gifl.add("battlefield");
-		String html = gifl.tryGettingAImage("faifdsfdsfsdfsdfdsal", 0);
-		System.out.println("html: " +html);
-		html = gifl.tryGettingAImage("fail", 0);
-		assertTrue(html.length() > 0);
+		//String html = gifl.tryGettingAImage("faifdsfdsfsdfsdfdsal", 0);
+		//System.out.println("html: " +html);
+		//html = gifl.tryGettingAImage("fail", 0);
+		//assertTrue(html.length() > 0);
 		when(tweet.getText()).thenReturn("vaya pedazo de fail");
 		gifl.onStatus(tweet);
 		when(tweet.getText()).thenReturn("wtf");
 		gifl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("loooooooooooooooooooool");
+		gifl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("mola el bf4 q no?");
+		gifl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("loooooooooooooooooooool");
+		gifl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("looofailooooooooooooool");
+		gifl.onStatus(tweet);
+		
 	}
 }
 

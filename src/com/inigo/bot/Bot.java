@@ -17,6 +17,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
+import twitter4j.UploadedMedia;
 
 public class Bot {
 	TwitterFactory factory;
@@ -92,7 +93,7 @@ public class Bot {
 		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+enta)[s]?(?:[^a-z]+|$)[^\\n]*", "%s?? pues come de aqui que alimenta!!!!");
 		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ino)[s]?(?:[^a-z]+|$)[^\\n]*", "%s??? en tu culo mi pepino!!!");
 		GIFFinderListener gifl = new GIFFinderListener(this);
-		gifl.add("fail");
+		gifl.add("fail[s]?");
 		gifl.add("wtf");
 		gifl.add("l[o]+l");
 		gifl.add("bf4");
@@ -131,10 +132,11 @@ public class Bot {
 	}
 	
 	public void replyWithMedia(Status inReplyTo, String path, String msg) throws TwitterException {
-		System.out.println("in reply to " + inReplyTo.getText());
+		System.out.println("in reply to " + inReplyTo.getText() + " path: " + path);
 		StatusUpdate stat= new StatusUpdate("@" + inReplyTo.getUser().getScreenName() + " " + msg);
+		UploadedMedia media = twitter.uploadMedia(new File(path));
 	    stat.setInReplyToStatusId(inReplyTo.getId());
-	    stat.setMedia(new File(path));
+	    stat.setMediaIds(new long[]{media.getMediaId()});
 	    twitter.updateStatus(stat);
 	}
 }
