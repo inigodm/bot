@@ -121,13 +121,20 @@ public class MainTest {
 		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ada)[s]?(?:[^a-z]+|$)[^\\n]*", "Para %s la que tengo aqui colgada");
 		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+al)(?:[^a-z]+|$)[^\\n]*", "Para %s mi polla en tu ojal...");
 		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+enta)[s]?(?:[^a-z]+|$)[^\\n]*", "%s?? pues come de aqui que alimenta!!!!");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ino)[s]?(?:[^a-z]+|$)[^\\n]*", "%s??? en tu culo mi pepino!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ino)$", "%s??? en tu culo mi pepino!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ano)$", "%s??? Me la agarras con la mano!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ato)$", "%s??? En tu boca mi aparato");
 		when(tweet.getText()).thenReturn("Pos claro, es evidente");
 		mpl.onStatus(tweet);
 		when(tweet.getText()).thenReturn("Sabes que soy abogado? pues tenlo en mente");
 		mpl.onStatus(tweet);
 		when(tweet.getText()).thenReturn("Se van a pelear...");
 		mpl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("Ven aqui un rato");
+		mpl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("Ven aqui un rato no");
+		mpl.onStatus(tweet);
+		
 	}
 	
 	@Test
@@ -167,6 +174,8 @@ public class MainTest {
 		when(tweet.getText()).thenReturn("vaya pedazo de fail");
 		gifl.onStatus(tweet);
 		when(tweet.getText()).thenReturn("wtf");
+		gifl.onStatus(tweet);
+		when(tweet.getText()).thenReturn("wtf again");
 		gifl.onStatus(tweet);
 		when(tweet.getText()).thenReturn("loooooooooooooooooooool");
 		gifl.onStatus(tweet);

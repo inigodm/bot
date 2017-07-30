@@ -84,6 +84,7 @@ public class GIFFinderListener implements StatusListener {
 
 	public String findAGifFor(String text, Pattern pattern) throws GiphyException, MalformedURLException, IOException {
 		String res = tryGettingAImage(text, words.get(pattern));
+		words.put(pattern, words.get(pattern) + 1);
 		if ("".equals(res)) {
 			res = tryGettingAImage(text, 0);
 			words.put(pattern, 1);
@@ -93,7 +94,7 @@ public class GIFFinderListener implements StatusListener {
 
 	public String tryGettingAImage(String text, Integer lastValid) throws GiphyException, IOException {
 		Giphy giphy = new Giphy("be9a342ba4114c448ed626e237091243");
-		System.out.println("buscando algo para '"+  text + "'");
+		System.out.println("buscando algo para '"+  text + "' ultimo pedido: " + lastValid);
 		List<GiphyData> r = giphy.search(text, 1, lastValid).getDataList();
 		String res = "";
 		if (!r.isEmpty()) {
