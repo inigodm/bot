@@ -12,6 +12,7 @@ import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
+import twitter4j.TwitterException;
 
 /**
  * @author inigo
@@ -35,24 +36,15 @@ public class MultiPatternListener  implements StatusListener{
 	@Override
 	public void onStatus(Status status) {
 		try {
-			if (!bot.isFriend(status.getUser().getId()) || 
-					status.getUser().getId() == bot.userID() ||
-					status.isRetweet()){
+			if (!bot.isFriend(status.getUser().getId()) || status.getUser().getId() == bot.userID() || status.isRetweet()){
 				System.out.println(status.getUser().getId() + "No amigo ");
 				return;
 			}
-			String tweet = status.getText().toLowerCase();
 			Matcher m;
 			for (Pattern patt : patterns.keySet()){
-				m = patt.matcher(tweet);
-				if (m.matches()){
-					List<String> strings = new ArrayList<>();
-					for (int i = 1; i <= m.groupCount(); i++){
-						strings.add(m.group(i));
-					}
-					bot.reply(status, String.format(patterns.get(patt), strings.toArray()));
-					System.out.println(String.format(patterns.get(patt), strings.toArray()));
-					return;
+				if (replyIfPattern(patt, status)){
+					// if replied we don't want to reply more to the same tweet
+					break;
 				}
 			}
 			
@@ -60,6 +52,20 @@ public class MultiPatternListener  implements StatusListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private boolean replyIfPattern(Pattern patt, Status status) throws TwitterException {
+		String tweet = status.getText().toLowerCase();
+		Matcher m = patt.matcher(tweet);
+		if (m.matches()){
+			List<String> strings = new ArrayList<>();
+			for (int i = 1; i <= m.groupCount(); i++){
+				strings.add(m.group(i));
+			}
+			bot.reply(status, String.format(patterns.get(patt), strings.toArray()));
+			return true;
+		}
+		return false;
 	}
 
 	@Override
