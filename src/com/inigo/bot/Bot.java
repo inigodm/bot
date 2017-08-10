@@ -57,6 +57,7 @@ public class Bot {
 	
 	public String reply(Status inReplyTo, String text) throws TwitterException{
 		System.out.println("in reply to " + inReplyTo.getText() + " " + text);
+		// the @name must be added or the response will not appear as response...
 		StatusUpdate stat= new StatusUpdate("@" + inReplyTo.getUser().getScreenName() + " " + text);
 	    stat.setInReplyToStatusId(inReplyTo.getId());
 	    twitter.updateStatus(stat);
@@ -85,20 +86,20 @@ public class Bot {
 	public void startService() throws TwitterException {
 		System.out.println("Starting stream listener....");
 		MultiPatternListener mpl = new MultiPatternListener(this);
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ente)[s]?(?:[^a-z]+|$)[^\\n]*", "Sabes?, para %s mi polla en tu frente...");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}ar)(?:[^a-z]+|$)[^\\n]*", "Sabes quien va a %s? mi polla en tu paladar...");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}ado)[s]?(?:[^a-z]+|$)[^\\n]*", "Para %s el que tengo aqui colgado");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}ada)[s]?(?:[^a-z]+|$)[^\\n]*", "Para %s la que tengo aqui colgada");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}al)$", "Para %s mi polla en tu ojal...");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+enta)[s]?(?:[^a-z]+|$)[^\\n]*", "%s?? pues come de aqui que alimenta!!!!");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}ino)$", "%s??? en tu culo mi pepino!!!");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ano)$", "%s??? Me la agarras con la mano!!!");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ato)$", "%s??? En tu boca mi aparato");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+atro)$", "%s??? Pa tu culo mi aparato");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+inco)$", "%s??? Por el culo te la hinco");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+anta)[s]?(?:[^a-z]+|$)[^\\n]*", "%s?? mi polla en tu garganta!!!!");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}oca)[s]?(?:[^a-z]+|$)[^\\n]*", "%s?? mi polla en tu boca!!!!");
-		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}aje)[s]?(?:[^a-z]+|$)[^\\n]*", "Para %s mis cojones, que se van de viaje");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ente)[s]?[\\W]*$", "Para %s mi polla en tu frente...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}ar)[\\W]*$", "Sabes quien va a %s? mi polla en tu paladar...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}ado)[s]?[\\W]*$", "Para %s el que tengo aqui colgado");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}ada)[s]?[\\W]*$", "Para %s la que tengo aqui colgada");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}al)[\\W]*$", "Para %s mi polla en tu ojal...");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+enta)[\\W]*$", "%s?? pues come de aqui que alimenta!!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}ino)[s]?[\\W]*$", "%s??? en tu culo mi pepino!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ano)[\\W]*$", "%s??? Me la agarras con la mano!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+ato)[\\W]*$", "%s??? En tu boca mi aparato");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+atro)[\\W]*$", "%s??? Pa tu culo mi aparato");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+inco)[\\W]*$", "%s??? Por el culo te la hinco");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]+anta)[\\W]*$", "%s?? mi polla en tu garganta!!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}oca)[\\W]*$", "%s?? mi polla en tu boca!!!!");
+		mpl.addPattern("(?:^|[\\w\\W]*[\\s]{1})([a-z]{2,}aje)[\\W]*$", "Para %s mis cojones, que se van de viaje");
 		GIFFinderListener gifl = new GIFFinderListener(this);
 		gifl.add("fail[s]?");
 		gifl.add("wtf");
