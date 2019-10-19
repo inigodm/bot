@@ -1,3 +1,4 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/wxs2kbm74l9jy3gs?svg=true)](https://ci.appveyor.com/project/inigodm/bot)
 # bot
 twitter bot
 
